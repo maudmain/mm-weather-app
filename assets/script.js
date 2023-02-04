@@ -5,36 +5,56 @@ const API = "5e1d2997c137aaf57841dd7d335e490e";
 
 // global variables
 let currentDate = moment().format('L')
+let searchArray = JSON.parse(window.localStorage.getItem("storedSearches")) ?? [];
 
-function showHistory(){
-  let searchArray = 
+function showHistory() {
+
 }
 
 
 // page load function- show search history
-$(document).ready(function (){
+$(document).ready(function () {
   showHistory();
-
 })
 
-// event listener
+// event listener for the city search click
 $("#search-button").on("click", function (event) {
   event.preventDefault();
 
   clear();
   cityInput();
+
 });
 
-function cityInput(){
+
+// function for the city input
+function cityInput() {
   const citySearchInput = $("#search-city").val().trim();
 
+  // adds the last input at beginning of the array and returns the new length of the array
+  // if it's not already in the list
+  if (searchArray.indexOf(citySearchInput) !== 0) {
+    searchArray.unshift(citySearchInput);
+    localStorage.setItem("storedSearches", JSON.stringify(searchArray));
+    // console.log(searchArray)
+  };
+
+  // empties the container
+  $("#search-history").empty();
+
+  // for loop to create a new button element 
+  for (i = 0; i < 5; i++) {
+    let cityEl = $("<button id='searched-city'>").addClass('btn-secondary btn');
+    cityEl.text(searchArray[i]);
+    $("#search-history").append(cityEl);
+  }
 
   const cityQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
 
   $.ajax({
     url: cityQueryURL,
     method: "GET"
-  }).then(weatherQuery);  
+  }).then(weatherQuery);
 }
 
 function weatherQuery(response) {
@@ -63,8 +83,8 @@ function weatherDisplay(response) {
   let currentWeather = $("<div class='current-weather>");
   $("#weather-container").append(currentWeather);
 
-    let cityName = $("<h2>").text(response.name + ' (' + currentDate + ')');
- let iconCurrent = response.weather[0].icon;
+  let cityName = $("<h2>").text(response.name + ' (' + currentDate + ')');
+  let iconCurrent = response.weather[0].icon;
   let currentWeatherIcon = $("<img>").attr('src', "https://openweathermap.org/img/w/" + iconCurrent + ".png")
 
   let currentTemp = $("<p>").text('Temp: ' + response.main.temp + '°C')
@@ -76,13 +96,12 @@ function weatherDisplay(response) {
 
 function fiveDayDisplay(response) {
   console.log(response)
-// convert the record, use moment to read the date, start of hour 0, 
+  // convert the record, use moment to read the date, start of hour 0, 
 
-// temp min/max
-// average wind
-// average humidity
-// icon mode style average (most commun occurance)
-
+  // temp min/max
+  // average wind
+  // average humidity
+  // icon mode style average (most commun occurance)
 
 }
 
@@ -90,3 +109,4 @@ function fiveDayDisplay(response) {
 function clear() {
   $("#weather-container").empty();
 }
+
