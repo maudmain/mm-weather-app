@@ -1,5 +1,7 @@
-// declare queryables
+//
+moment.locale('en-gb');
 
+console.log(moment.locales());
 // API key
 const API = "5e1d2997c137aaf57841dd7d335e490e";
 
@@ -102,7 +104,9 @@ function weatherDisplay(response) {
 }
 
 function fiveDayDisplay(response) {
-  console.log(response)
+  console.log(response);
+
+  $("#five-day-container").empty();
 
   let forecastDays = {};
 
@@ -115,7 +119,12 @@ function fiveDayDisplay(response) {
     forecastDays[day] = new ForecastDay(forecastDays[day], moment.unix(day))
   }
   console.log(forecastDays)
-
+  Object.keys(forecastDays).sort().forEach(day =>{
+    const forecastDay = forecastDays[day]
+  let forecastCard = $("<div>").text(`${forecastDay.day.format('L')} Temp ${forecastDay.temp}`)
+  $("#five-day-container").append(forecastCard)
+  })
+  
 
 }
 
