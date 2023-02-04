@@ -1,7 +1,7 @@
-//
+// set the location to have date display in en-gb format
 moment.locale('en-gb');
 
-console.log(moment.locales());
+
 // API key
 const API = "5e1d2997c137aaf57841dd7d335e490e";
 
@@ -13,7 +13,6 @@ function showHistory() {
 
 }
 
-
 // page load function- show search history
 $(document).ready(function () {
   showHistory();
@@ -22,10 +21,8 @@ $(document).ready(function () {
 // event listener for the city search click
 $("#search-button").on("click", function (event) {
   event.preventDefault();
-
   clear();
   cityInput();
-
 });
 
 // function for the city input
@@ -37,7 +34,6 @@ function cityInput() {
   if (searchArray.indexOf(citySearchInput) !== 0) {
     searchArray.unshift(citySearchInput);
     localStorage.setItem("storedSearches", JSON.stringify(searchArray));
-    // console.log(searchArray)
   };
 
   // empties the container
@@ -52,11 +48,10 @@ function cityInput() {
     //When a user click on a city in the search history they are again presented with current and future conditions for that city
     cityEl.on('click', function (event) {
       event.preventDefault();
-      // empty()
       $("#search-city").text(event.target.text);
       cityInput();
-    })
-  }
+    });
+  };
 
   const cityQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
 
@@ -64,16 +59,16 @@ function cityInput() {
     url: cityQueryURL,
     method: "GET"
   }).then(weatherQuery);
-}
+};
 
 function weatherQuery(response) {
   console.log(response)
 
-  let lat = response[0].lat
-  let lon = response[0].lon
-  const weatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API}`
+  let lat = response[0].lat;
+  let lon = response[0].lon;
+  const weatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API}`;
 
-  const fiveDayQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API}`
+  const fiveDayQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API}`;
 
   $.ajax({
     url: weatherQueryURL,
@@ -84,7 +79,7 @@ function weatherQuery(response) {
     url: fiveDayQueryURL,
     method: "GET"
   }).then(fiveDayDisplay);
-}
+};
 
 function weatherDisplay(response) {
   console.log(response);
@@ -94,9 +89,9 @@ function weatherDisplay(response) {
 
   let cityName = $("<h2>").text(response.name + ' (' + currentDate + ')');
   let iconCurrent = response.weather[0].icon;
-  let currentWeatherIcon = $("<img>").attr('src', "https://openweathermap.org/img/w/" + iconCurrent + ".png")
+  let currentWeatherIcon = $("<img>").attr('src', "https://openweathermap.org/img/w/" + iconCurrent + ".png");
 
-  let currentTemp = $("<p>").text('Temp: ' + response.main.temp + '°C')
+  let currentTemp = $("<p>").text('Temp: ' + response.main.temp + '°C');
   let currentWind = $("<p>").text('Wind: ' + response.wind.speed + ' meter/sec');
   let currentHumidity = $("<p>").text('Humidity: ' + response.main.humidity + '%');
 
@@ -111,21 +106,31 @@ function fiveDayDisplay(response) {
   let forecastDays = {};
 
   response.list.forEach(f => {
-    const day = moment.unix(f.dt).startOf("day").format("X")
-    const hourlyForecasts = forecastDays[day] ??= []
-    hourlyForecasts.push(f)
+    const day = moment.unix(f.dt).startOf("day").format("X");
+    const hourlyForecasts = forecastDays[day] ??= [];
+    hourlyForecasts.push(f);
   })
   for (day in forecastDays){
-    forecastDays[day] = new ForecastDay(forecastDays[day], moment.unix(day))
+    forecastDays[day] = new ForecastDay(forecastDays[day], moment.unix(day));
   }
-  console.log(forecastDays)
+  console.log(forecastDays);
   Object.keys(forecastDays).sort().forEach(day =>{
-    const forecastDay = forecastDays[day]
-  let forecastCard = $("<div>").text(`${forecastDay.day.format('L')} Temp ${forecastDay.temp}`)
-  $("#five-day-container").append(forecastCard)
-  })
-  
+    const forecastDay = forecastDays[day];
 
+  let forecastCard = $("<div>").addClass("forecast-cards")
+  forecastCard.addClass("card");
+  $("#five-day-container").append(forecastCard);
+
+  let cardBody = $("<div class='card-body'>");
+  forecastCard.append(cardBody)
+  
+  let cardTitle = $("<h3>").text(`${forecastDay.day.format('L')}`);
+  let cardIcon = $("<img>").attr('src', `https://openweathermap.org/img/w/${forecastDay.icon}.png`);
+  let cardTemp = $("<p>").text(`Temp: ${forecastDay.temp}`);
+  let cardWind = $("<p>").text(`Wind: ${forecastDay.wind}`);
+  let cardHumidity = $("<p>").text(`Humidity: ${forecastDay.humidity}`);
+cardBody.append(cardTitle, cardIcon, cardTemp, cardWind, cardHumidity)
+  })
 }
 
 function ForecastDay(hourlyForecasts, day) {
