@@ -26,7 +26,6 @@ $("#search-button").on("click", function (event) {
 
 });
 
-
 // function for the city input
 function cityInput() {
   const citySearchInput = $("#search-city").val().trim();
@@ -44,9 +43,17 @@ function cityInput() {
 
   // for loop to create a new button element 
   for (i = 0; i < 5; i++) {
-    let cityEl = $("<button id='searched-city'>").addClass('btn-secondary btn');
+    let cityEl = $("<button id='searched-city'>").addClass('btn-secondary btn m-1');
     cityEl.text(searchArray[i]);
     $("#search-history").append(cityEl);
+    //event listener for the history button
+    //When a user click on a city in the search history they are again presented with current and future conditions for that city
+    cityEl.on('click', function (event) {
+      event.preventDefault();
+      // empty()
+      $("#search-city").text(event.target.text);
+      cityInput();
+    })
   }
 
   const cityQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
@@ -96,13 +103,45 @@ function weatherDisplay(response) {
 
 function fiveDayDisplay(response) {
   console.log(response)
-  // convert the record, use moment to read the date, start of hour 0, 
 
-  // temp min/max
-  // average wind
-  // average humidity
-  // icon mode style average (most commun occurance)
+  let forecastDays = {};
 
+  response.list.forEach(f => {
+    const day = moment.unix(f.dt).startOf("day").format("X")
+    const hourlyForecasts = forecastDays[day] ??= []
+    hourlyForecasts.push(f)
+  })
+  for (day in forecastDays){
+    forecastDays[day] = new ForecastDay(forecastDays[day], moment.unix(day))
+  }
+  console.log(forecastDays)
+
+
+}
+
+function ForecastDay(hourlyForecasts, day) {
+  return {
+    forecasts: hourlyForecasts,
+    day,
+    get temp(){
+      return this.forecasts.map(f => f.main.temp).reduce(
+        (sum, temp) => sum + temp
+      ) / this.forecasts.length
+    },
+    get wind(){
+      return this.forecasts.map(f => f.wind.speed).reduce(
+        (sum, speed) => sum + speed
+      ) / this.forecasts.length
+    },
+    get humidity(){
+      return this.forecasts.map(f => f.main.humidity).reduce(
+        (sum, humidity) => sum + humidity
+      ) / this.forecasts.length
+    },
+    get icon(){
+      return mode(this.forecasts.map(f => f.weather[0].icon))
+    }
+  }
 }
 
 // Function to empty out the articles
@@ -110,3 +149,25 @@ function clear() {
   $("#weather-container").empty();
 }
 
+// to calculate the number that occurs the most often for the get icon()
+const mode = arr => {
+  const mode = {};
+  let max = 0, count = 0;
+
+  for(let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    
+    if(mode[item]) {
+      mode[item]++;
+    } else {
+      mode[item] = 1;
+    }
+    
+    if(count < mode[item]) {
+      max = item;
+      count = mode[item];
+    }
+  }
+   
+  return max;
+};
