@@ -55,7 +55,7 @@ function cityInput() {
   
   };
 
-  const cityQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
+  const cityQueryURL = `https://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
 
   clear();
 
