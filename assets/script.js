@@ -10,6 +10,10 @@ let searchArray = JSON.parse(window.localStorage.getItem("storedSearches")) ?? [
 
 // page load function- show search history
 $(document).ready(function () {
+  if (searchArray.length > 0) { 
+    $("#search-city").val(searchArray[0]); 
+    cityInput();
+  }
 });
 
 // event listener for the city search click
@@ -102,6 +106,7 @@ function fiveDayDisplay(response) {
 
   // create an empty object to hold the daily data from the query response
   let forecastDays = {};
+  console.log(forecastDays)
 
   // for each loop to declare the timestamp moments
   // create an empty array
@@ -132,18 +137,18 @@ function fiveDayDisplay(response) {
 
     // create, append card elements
     let forecastCard = $("<div>").addClass("forecast-cards")
-    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mx-3 text-center");
+    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mx-3 text-center bg-secondary text-white");
     $("#five-day-container").append(forecastCard);
 
     //  Populate the card element with a div element containing the information
     let cardBody = $("<div class='card-body'>");
     forecastCard.append(cardBody)
 
-    let cardTitle = $("<h3>").text(`${forecastDay.day.format('L')}`);
+    let cardTitle = $("<h4>").text(`${forecastDay.day.format('L')}`);
     let cardIcon = $("<img>").attr('src', `https://openweathermap.org/img/w/${forecastDay.icon}.png`);
-    let cardTemp = $("<p>").text(`Temp: ${forecastDay.temp}`);
-    let cardWind = $("<p>").text(`Wind: ${forecastDay.wind}`);
-    let cardHumidity = $("<p>").text(`Humidity: ${forecastDay.humidity}`);
+    let cardTemp = $("<p>").text(`Temp: ${forecastDay.temp} °C`);
+    let cardWind = $("<p>").text(`Wind: ${forecastDay.wind} meter/sec`);
+    let cardHumidity = $("<p>").text(`Humidity: ${forecastDay.humidity} %`);
     cardBody.append(cardTitle, cardIcon, cardTemp, cardWind, cardHumidity)
   })
 }
@@ -160,19 +165,19 @@ function ForecastDay(hourlyForecasts, day) {
       // using the .map() we create a new array to hold temp from the daily timestamps
       // using the .reduce() we add all the temp values to return a single value
       // we divide the sum by the length of the object to get the mean average
-      return this.forecasts.map(f => f.main.temp).reduce(
+      return (this.forecasts.map(f => f.main.temp).reduce(
         (sum, temp) => sum + temp
-      ) / this.forecasts.length
+      ) / this.forecasts.length).toFixed(1)
     },
     get wind() {
-      return this.forecasts.map(f => f.wind.speed).reduce(
+      return (this.forecasts.map(f => f.wind.speed).reduce(
         (sum, speed) => sum + speed
-      ) / this.forecasts.length
+      ) / this.forecasts.length).toFixed(1)
     },
     get humidity() {
-      return this.forecasts.map(f => f.main.humidity).reduce(
+      return (this.forecasts.map(f => f.main.humidity).reduce(
         (sum, humidity) => sum + humidity
-      ) / this.forecasts.length
+      ) / this.forecasts.length).toFixed(1)
     },
     get icon() {
       // as icon is not a number we can check what icon happens the most during the day, using mode()
@@ -188,7 +193,7 @@ function ForecastDay(hourlyForecasts, day) {
 // Function to empty out the articles
 function clear() {
   $("#weather-container").empty();
-  $("#five-day-containe").empty();
+  $("#five-day-container").empty();
 }
 
 // mode assigment to calculate the number that occurs the most often for the get icon()
