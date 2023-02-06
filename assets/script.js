@@ -136,8 +136,8 @@ function fiveDayDisplay(response) {
     }
 
     // create, append card elements
-    let forecastCard = $("<div>").addClass("forecast-cards")
-    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mx-3 mt-2 text-center bg-secondary text-white");
+    let forecastCard = $("<div>").addClass("forecast-cards d-flex justify-content-center")
+    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mt-2 text-center bg-secondary text-white");
     $("#five-day-container").append(forecastCard);
 
     //  Populate the card element with a div element containing the information

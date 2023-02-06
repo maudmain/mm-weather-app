@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="./assets/style.css" />
 
 
-    <title>Weather App</title>
+    <title>Happy Travel Weather</title>
 </head>
 
 <body>
@@ -43,10 +43,10 @@
             <div class=" col-md-2 mt-3 justify-content-center">
                 <form class="form-inline my-2 my-lg-0">
                     <div class="input-group text-center">
-                        <h3>Search for a city: </h3>
-                        <input type="search" class="form-control rounded mr-sm-2" id="search-city"
+                        <h3 class="text-secondary ">Search for a city: </h3>
+                        <input type="search" class="form-control rounded mr-sm-2 col-sm" id="search-city"
                             placeholder="Enter a city name" aria-label="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit" id="search-button">Search</button>
+                        <button class="btn btn-warning my-2 my-sm-0 col-sm col-lg" type="submit" id="search-button">Search</button>
                     </div>
                 </form>
 
@@ -62,13 +62,13 @@
                 <div id="forecast-container">
                     <div class="row justify-content-center align-items-center">
                         <!-- current day/city forecast-->
-                        <div class="container col-8 rounded text-center m-3 bg-secondary text-white"
+                        <div class="container col rounded text-center m-3 bg-secondary text-white"
                             id="weather-container">
                         </div>
                     </div>
 
-                    <div class="row justify-content-center align-items-center" id="five-day-container">
-                        <h4>5-Day Forecast:</h4>
+                    <h3 class="col-12 text-center text-secondary">5-day Forecast:</h3>
+                    <div class="row justify-content-around   align-items-center" id="five-day-container">
                         <!--5 day Forecast cards-->
                         <div class="container col-8 m-auto">
                         </div>
