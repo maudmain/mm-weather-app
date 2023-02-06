@@ -25,7 +25,10 @@ $("#search-button").on("click", function (event) {
 // function for the city input
 function cityInput() {
   const citySearchInput = $("#search-city").val().trim();
-
+  // if the search is null or empty return 
+  if (citySearchInput === null || citySearchInput ===""){
+    return
+  }
   // adds the last input at beginning of the array and returns the new length of the array
   // if it's not already at the top of the list
   if (searchArray.indexOf(citySearchInput) !== 0) {
@@ -38,6 +41,7 @@ function cityInput() {
 
   // for loop to create a new search history button elements (max 5)
   for (i = 0; i < 5; i++) {
+    if (i >= searchArray.length) { break; }
     let cityEl = $("<button id='searched-city'>").addClass('bg-secondary btn my-1 text-white');
     cityEl.text(searchArray[i]);
     $("#search-history").append(cityEl);
@@ -48,6 +52,7 @@ function cityInput() {
       $("#search-city").val(event.target.innerText);
       cityInput();
     });
+  
   };
 
   const cityQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${citySearchInput}&limit=1&appid=${API}`;
@@ -58,6 +63,7 @@ function cityInput() {
     url: cityQueryURL,
     method: "GET"
   }).then(weatherQuery);
+
 };
 
 function weatherQuery(response) {
@@ -88,7 +94,7 @@ function weatherDisplay(response) {
   console.log(response);
 
   let currentWeather = $("<div class='current-weather,card-body>");
-  $("#weather-container").append(currentWeather);
+  $("#weather-container").append(currentWeather).removeClass("d-none");
 
   let cityName = $("<h2>").text(response.name + ' (' + currentDate + ')');
   let iconCurrent = response.weather[0].icon;
@@ -136,7 +142,7 @@ function fiveDayDisplay(response) {
     }
 
     // create, append card elements
-    let forecastCard = $("<div>").addClass("forecast-cards d-flex justify-content-center")
+    let forecastCard = $("<div>").addClass("forecast-cards d-flex justify-content-center  ")
     forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mt-2 text-center bg-secondary text-white");
     $("#five-day-container").append(forecastCard);
 
