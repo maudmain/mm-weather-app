@@ -38,7 +38,7 @@ function cityInput() {
 
   // for loop to create a new search history button elements (max 5)
   for (i = 0; i < 5; i++) {
-    let cityEl = $("<button id='searched-city'>").addClass('btn-secondary btn m-1');
+    let cityEl = $("<button id='searched-city'>").addClass('bg-secondary btn my-1 text-white');
     cityEl.text(searchArray[i]);
     $("#search-history").append(cityEl);
     //event listener for the history button
@@ -137,7 +137,7 @@ function fiveDayDisplay(response) {
 
     // create, append card elements
     let forecastCard = $("<div>").addClass("forecast-cards")
-    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mx-3 text-center bg-secondary text-white");
+    forecastCard.addClass("card col-xl-2 col-md-5 col-sm-10 mx-3 mt-2 text-center bg-secondary text-white");
     $("#five-day-container").append(forecastCard);
 
     //  Populate the card element with a div element containing the information
